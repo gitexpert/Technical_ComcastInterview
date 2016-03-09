@@ -1,0 +1,171 @@
+{
+    "AWSTemplateFormatVersion":"2010-09-09",
+    "Description":"Poc for Jumphost",
+    "Parameters":{
+        "Environment":{
+            "Description":"POC",
+            "Default":"POC",
+            "AllowedValues":[
+                "POC"
+            ],
+            "Type":"String"
+        },
+        "ServerInstanceType":{
+            "Description":"Server size",
+            "Default":"t2.micro",
+            "AllowedValues":[
+                "t2.micro",
+                "r3.large",
+                "m3.large",
+                "t1.micro",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c3.large",
+                "c1.xlarge",
+                "cc2.8xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "cr1.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "Type":"String"
+        },
+        "Username":{
+            "Description":"Username",
+            "Type":"String",
+            "Default":"Ravinj2030@gmail.com"
+        },
+        "Ldap serverSubnetId":{
+            "Description":"SubnetId for poc public subnet in Virtual Private Cloud (VPC)",
+            "Type":"String",
+            "Default":"subnet-d09a38fa",
+            "AllowedValues":[
+                "subnet-d09a38fa"
+            ]
+        },
+        "Role":{
+            "Description":"Role",
+            "Type":"String",
+            "Default":"Ldap"
+        },
+        "Requester":{
+            "Description":"Requester",
+            "Type":"String",
+            "Default":"Task"
+        },
+        "AvailabilityZone1":{
+            "Description":"AvailabilityZone",
+            "Default":"us-east-1a",
+            "AllowedValues":[
+                "us-east-1a"
+            ],
+            "Type":"String"
+        },
+        "VpcId":{
+            "Type":"String",
+            "Description":"Your Virtual Private Cloud ID(VPC)",
+            "Default":"vpc-dfb88dbb"
+        },
+        "jumphostServerAMI":{
+            "Description":"Ubuntu 14.04 LTS | 64-bit based AMI",
+            "Default":"i-6afa40ee",
+            "Type":"String"
+        },
+        "Keypair":{
+            "Description":"Key Pair for servers",
+            "Default":"test",
+            "Type":"String"
+        },
+        "InstanceRole":{
+            "Default":"Ldap",
+            "Description":"Rolename of Instance Role, Instance based access policy",
+            "Type":"String"
+        },
+        "ServerSG1":{
+            "Description":"Security group for jumphost",
+            "Default":"sg-76be010e",
+            "Type":"String"
+        },
+        "VolumeSize1":{
+            "Description":" Specify New drive1 volume size, enter just number, units are in GiBs  ",
+            "Default":"20",
+            "Type":"String"
+        }
+    },
+    "Resources":{
+        "Instance1":{
+            "Type":"AWS::EC2::Instance",
+            "Properties":{
+                "InstanceType":{
+                    "Ref":"ServerInstanceType"
+                },
+                "AvailabilityZone":{
+                    "Ref":"AvailabilityZone1"
+                },
+                "IamInstanceProfile":{
+                    "Ref":"InstanceRole"
+                },
+                "ImageId":{
+                    "Ref":"ServerAMI"
+                },
+                "SecurityGroupIds":[
+                    {
+                        "Ref":"ServerSG1"
+                    }
+                ],
+                "SubnetId":{
+                    "Ref":"ServerSubnetId"
+                },
+                "KeyName":{
+                    "Ref":"Keypair"
+                },
+                "Tags":[
+                    {
+                        "Key":"Role",
+                        "Value":{
+                            "Ref":"Role"
+                        }
+                    },
+                    {
+                        "Key":"Username",
+                        "Value":{
+                            "Ref":"Username"
+                        }
+                    },
+                
+               
+                    {
+                        "Key":"Environment",
+                        "Value":{
+                            "Ref":"Environment"
+                        }
+                    },
+                
+                    {
+                        "Key":"Requester",
+                        "Value":{
+                            "Ref":"Requester"
+                        }
+                    }
+                ],
+                "BlockDeviceMappings":[
+                    {
+                        "DeviceName":"/dev/sda1",
+                        "Ebs":{
+                            "VolumeSize":"20",
+                            "VolumeType":"gp2"
+                        }
+                    }
+                ]
+       
+            }
+        }
+    }
+}
